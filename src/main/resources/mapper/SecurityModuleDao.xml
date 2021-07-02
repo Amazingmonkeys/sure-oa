@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sure.oa.func.security.module.SecurityModuleDao">
+    <select id="findModuleList" resultType="com.sure.oa.model.Module">
+        select distinct p.m_id p_id , p.m_name p_name, m.m_id , m.m_name , m.m_url
+
+        from t_module p join t_module m on m.m_pid = p.m_id
+        join t_um um on um.m_id = m.m_id
+        where
+        p.m_pid is null and
+        p.m_ismenu = 1 and
+
+        m.m_pid is not null and
+        m.m_ismenu = 1
+
+        order by
+        p.m_id,m.m_id
+    </select>
+    <insert id="insertUserModules">
+        insert into t_um(u_id, m_id) values
+        <foreach collection="moduleIds" item="moduleId" separator="," open="" close="">
+            (#{u_id}, #{moduleId})
+        </foreach>
+    </insert>
+</mapper>

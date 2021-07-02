@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sure.oa.func.security.home.SecurityHomeDao">
+    <select id="findUserModuleList" resultType="com.sure.oa.model.Module">
+        select p.m_id p_id , p.m_name p_name, m.m_id , m.m_name , m.m_url
+
+        from t_module p join t_module m on m.m_pid = p.m_id
+        join t_um um on um.m_id = m.m_id
+        join t_user u on u.u_id = um.u_id
+        where
+        p.m_pid is null and
+        p.m_ismenu = 1 and
+
+        m.m_pid is not null and
+        m.m_ismenu = 1 and
+
+        u.u_status = 1 and
+        um.u_id = #{uid} <!-- 如果DAO（映射器）方法中仅有一个简单参数（时间、字符串和数字等），则占位参数名可以随便写，参数定义中也不需要使用@Param注解命名占位参数名 -->
+
+        order by
+        p.m_id,m.m_id
+    </select>
+</mapper>

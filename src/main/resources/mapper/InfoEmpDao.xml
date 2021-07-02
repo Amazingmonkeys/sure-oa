@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sure.oa.func.info.emp.InfoEmpDao">
+    <select id="findEmpList" resultType="com.sure.oa.model.Emp">
+        select
+            e_id, e_name, e_sex, e_birth, e_salary, e.d_id, d_name, e_status, e_remark, e_photo
+        from
+            t_emp e left join t_dep d on e.d_id = d.d_id
+        where
+            1 = 1
+            <if test="e_status != null">
+                and e_status = #{e_status}
+            </if>
+            <if test="d_id != null">
+                and e.d_id = #{d_id}
+            </if>
+            <if test="e_sex != null and e_sex != ''">
+                and e_sex = #{e_sex}
+            </if>
+            <if test="e_id != null and e_id != ''">
+                and e_id like concat('%', #{e_id}, '%')
+            </if>
+            <if test="e_name != null and e_name != ''">
+                and e_name like concat('%', #{e_name}, '%')
+            </if>
+            <if test="e_remark != null and e_remark != ''">
+                and e_remark like concat('%', #{e_remark}, '%')
+            </if>
+            <if test="e_birth_start != null">
+                and e_birth &gt;= #{e_birth_start}
+            </if>
+            <if test="e_birth_end != null">
+                and e_birth &lt;= #{e_birth_end}
+            </if>
+            <if test="e_sal_start != null">
+                and e_salary &gt;= #{e_sal_start}
+            </if>
+            <if test="e_sal_end != null">
+                and e_salary &lt;= #{e_sal_end}
+            </if>
+    </select>
+
+    <delete id="deleteEmpIds">
+        delete from t_emp
+        <where>
+            <foreach collection="e_ids" item="e_id" separator="or" open="(" close=")">
+                e_id = #{e_id}
+            </foreach>
+            and e_status = #{code}
+        </where>
+    </delete>
+</mapper>
